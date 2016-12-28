@@ -8,58 +8,71 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using MICMediaManager.Models;
+using Microsoft.Extensions.Options;
 
 namespace MICMediaManager.Controllers
 {
+    // EXAMPLE FROM: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads
+    // Modified to use secrets and single file
+
     public class UploadFilesController : Controller
     {
-        [HttpPost("UploadFiles")]
-        public async Task<IActionResult> Post(List<IFormFile> files)
-        {
-            long size = files.Sum(f => f.Length);
+        private readonly MyOptions _optionsAccessor;
 
+        public UploadFilesController(IOptions<MyOptions> optionsAccessor)
+        {
+            _optionsAccessor = optionsAccessor.Value;
+        }
+
+        [HttpPost("UploadFiles")]
+        public async Task<IActionResult> Post(IFormFile postedFile)
+        {
+         
+            // Removed multiple files, set to single file
             // full path to file in temp location
             var filePath = Path.GetTempFileName();
-            string fileName = "";
+            string fileNameNew = "";
+            string retUrl = "nothing";
 
-            foreach (var formFile in files)
+            if (postedFile.Length > 0)
             {
-                if (formFile.Length > 0)
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await formFile.CopyToAsync(stream);
-                    }
-                    fileName = formFile.FileName;
+                    await postedFile.CopyToAsync(stream);
+                    string fileName = postedFile.FileName.ToLower();
+                    string fileNameExt = fileName.Substring((fileName.Length - 4), 4);
+                    fileNameNew = Guid.NewGuid() + fileNameExt;
                 }
-            }
 
-            // process uploaded files
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-                "micmiamisa01",
-                "ryMUIWFYy8ZgtC0U+84rsAYcjO22SaZcR2gTMxrcQsnJVTriKuxl+6QDG+LE3uhSZ7xhU9CUfOz007FDQm7dWw=="), true);
+                // process uploaded files
+                CloudStorageAccount storageAccount = new CloudStorageAccount(
+                new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+                    _optionsAccessor.StorageAccountName,
+                    _optionsAccessor.StorageAccountKey), true);
 
-            // Create a blob client.
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+                // Create a blob client.
+                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
-            // Get a reference to a container named “mycontainer.”
-            CloudBlobContainer container = blobClient.GetContainerReference("micscreenmedia");
+                // Get a reference to a container named “mycontainer.”
+                CloudBlobContainer container = blobClient.GetContainerReference("micscreenmedia");
 
-            // If container doesn’t exist, create it.
-            await container.CreateIfNotExistsAsync();
+                // If container doesn’t exist, create it.
+                await container.CreateIfNotExistsAsync();
 
-            // Get a reference to a blob named "myblob".
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
+                // Get a reference to a blob named "myblob".
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileNameNew);
 
-            // Create or overwrite the "myblob" blob with the contents of a local file
-            // named “myfile”.
-            using (var fileStream = System.IO.File.OpenRead(filePath))
-            {
-                await blockBlob.UploadFromStreamAsync(fileStream);
-            }
+                // Create or overwrite the "myblob" blob with the contents of a local file
+                // named “myfile”.
+                using (var fileStream = System.IO.File.OpenRead(filePath))
+                {
+                    await blockBlob.UploadFromStreamAsync(fileStream);
+                }
+                retUrl = blockBlob.Uri.ToString();
+            }            
             
-            return Ok(new { count = files.Count, size, filePath, blockBlob.Uri});
+            return Ok(new {filePath, retUrl});
         }
     }
 }
