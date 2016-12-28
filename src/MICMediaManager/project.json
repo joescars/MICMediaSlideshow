@@ -1,9 +1,9 @@
-﻿{
+{
   "userSecretsId": "aspnet-MICMediaManager-cf471bbf-c7a2-45e9-b9c0-fd5d6e9b106c",
 
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "version": "1.1.0",
+      "version": "1.1",
       "type": "platform"
     },
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
@@ -43,7 +43,8 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview2-final",
       "type": "build"
-    }
+    },
+    "WindowsAzure.Storage": "8.0.0"
   },
 
   "tools": {
