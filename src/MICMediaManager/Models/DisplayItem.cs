@@ -14,5 +14,11 @@ namespace MICMediaManager.Models
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
 
+        public DisplayItem()
+        {
+            this.DateCreated = DateTime.Now;
+            this.DateModified = DateTime.Now;
+        }
+
     }
 }

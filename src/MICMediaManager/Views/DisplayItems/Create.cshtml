@@ -1,0 +1,49 @@
+@model MICMediaManager.ViewModels.DisplayItemCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<form asp-action="Create" enctype="multipart/form-data" method="post">
+    <div class="form-horizontal">
+        <h4>DisplayItem</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="IsActive" />
+                    <label asp-for="IsActive"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="OrderIndex" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="OrderIndex" class="form-control" />
+                <span asp-validation-for="OrderIndex" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <p>Upload one or more files using this form:</p>
+                <input type="file" name="MediaFile" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
