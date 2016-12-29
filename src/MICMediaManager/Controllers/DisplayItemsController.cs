@@ -32,6 +32,16 @@ namespace MICMediaManager.Controllers
             return View(await _context.DisplayItem.ToListAsync());
         }
 
+        // GET: DisplayItems/GetActive
+        // Public API to push out active slides for Media Player
+        public async Task<List<DisplayItem>> GetActive()
+        {
+            return await _context.DisplayItem
+                .Where(d => d.IsActive == true)
+                .OrderBy(d => d.OrderIndex)
+                .ToListAsync();
+        }
+
         // GET: DisplayItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
