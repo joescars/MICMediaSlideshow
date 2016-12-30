@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using System.IO;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using MICMediaManager.Services;
 
 namespace MICMediaManager.Controllers
 {
@@ -19,11 +20,15 @@ namespace MICMediaManager.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly MyOptions _optionsAccessor;
+        private readonly IDisplayItemRepository _displayItemRepository;
 
-        public DisplayItemsController(ApplicationDbContext context, IOptions<MyOptions> optionsAccessor)
+        public DisplayItemsController(ApplicationDbContext context, 
+            IOptions<MyOptions> optionsAccessor,
+            IDisplayItemRepository displayItemRepository)
         {
             _context = context;
             _optionsAccessor = optionsAccessor.Value;
+            _displayItemRepository = displayItemRepository;
         }
 
         // GET: DisplayItems
@@ -36,10 +41,7 @@ namespace MICMediaManager.Controllers
         // Public API to push out active slides for Media Player
         public async Task<List<DisplayItem>> GetActive()
         {
-            return await _context.DisplayItem
-                .Where(d => d.IsActive == true)
-                .OrderBy(d => d.OrderIndex)
-                .ToListAsync();
+            return await _displayItemRepository.GetActiveAsync();
         }
 
         // GET: DisplayItems/Details/5
