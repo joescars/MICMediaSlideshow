@@ -55,6 +55,9 @@ namespace MICMediaManager
 
             // Add application services.
             services.AddScoped<IDisplayItemRepository, DisplayItemRepository>();
+            services.AddScoped<IStorageService, StorageService>();
+
+            // Default Project Services
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
         }

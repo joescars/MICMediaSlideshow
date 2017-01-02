@@ -21,14 +21,17 @@ namespace MICMediaManager.Controllers
         private readonly ApplicationDbContext _context;
         private readonly MyOptions _optionsAccessor;
         private readonly IDisplayItemRepository _displayItemRepository;
+        private readonly IStorageService _storageService;
 
         public DisplayItemsController(ApplicationDbContext context, 
             IOptions<MyOptions> optionsAccessor,
-            IDisplayItemRepository displayItemRepository)
+            IDisplayItemRepository displayItemRepository,
+            IStorageService storageService)
         {
             _context = context;
             _optionsAccessor = optionsAccessor.Value;
             _displayItemRepository = displayItemRepository;
+            _storageService = storageService;
         }
 
         // GET: DisplayItems
@@ -77,44 +80,11 @@ namespace MICMediaManager.Controllers
             if (ModelState.IsValid)
             {
                 //upload file to blob storage
-                var filePath = Path.GetTempFileName();
-                string fileNameNew = "";
-                string retUrl = "nothing";
+                string retUrl = "";
 
                 if (model.MediaFile.Length > 0)
                 {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await model.MediaFile.CopyToAsync(stream);
-                        string fileName = model.MediaFile.FileName.ToLower();
-                        string fileNameExt = fileName.Substring((fileName.Length - 4), 4);
-                        fileNameNew = Guid.NewGuid() + fileNameExt;
-                    }
-
-                    // process uploaded files
-                    CloudStorageAccount storageAccount = new CloudStorageAccount(
-                    new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-                        _optionsAccessor.StorageAccountName,
-                        _optionsAccessor.StorageAccountKey), true);
-
-                    // Create a blob client.
-                    CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
-                    // Get a reference to a container named “mycontainer.”
-                    CloudBlobContainer container = blobClient.GetContainerReference("micscreenmedia");
-
-                    // If container doesn’t exist, create it.
-                    await container.CreateIfNotExistsAsync();
-
-                    // Get a reference to a blob named "myblob".
-                    CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileNameNew);
-
-                    // Create or overwrite the "myblob" blob with the contents of a local file
-                    using (var fileStream = System.IO.File.OpenRead(filePath))
-                    {
-                        await blockBlob.UploadFromStreamAsync(fileStream);
-                    }
-                    retUrl = blockBlob.Uri.ToString();
+                    retUrl = await _storageService.UploadImageAsync(model.MediaFile);
                 }
 
                 //create new display item
