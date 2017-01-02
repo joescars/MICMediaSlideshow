@@ -21,6 +21,13 @@ namespace MICMediaManager.Services
 
         public async Task CreateAsync(DisplayItem d)
         {
+            //get the top index and set the new itemIndex +1
+            int curIndex = await _dbContext.DisplayItem
+                .Where(di => di.IsActive == true)
+                .MaxAsync(di => di.OrderIndex);
+
+            d.OrderIndex = curIndex + 1;
+
             _dbContext.Add(d);
             await _dbContext.SaveChangesAsync();
         }

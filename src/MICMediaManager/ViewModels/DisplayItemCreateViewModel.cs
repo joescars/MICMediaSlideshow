@@ -9,7 +9,7 @@ namespace MICMediaManager.ViewModels
     public class DisplayItemCreateViewModel
     {
         public int Id { get; set; }
-        public int OrderIndex { get; set; }
+        //public int OrderIndex { get; set; }
         //public string ImageUri { get; set; }
         public bool IsActive { get; set; }
         //public DateTime DateCreated { get; set; }

@@ -90,7 +90,6 @@ namespace MICMediaManager.Controllers
                 //create new display item
                 DisplayItem d = new DisplayItem();
                 d.IsActive = model.IsActive;
-                d.OrderIndex = model.OrderIndex;
                 d.ImageUri = retUrl;
 
                 //save
