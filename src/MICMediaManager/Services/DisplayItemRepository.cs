@@ -32,6 +32,40 @@ namespace MICMediaManager.Services
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateAsync(DisplayItemEditViewModel model)
+        {
+            var displayItem = await _dbContext.DisplayItem.SingleOrDefaultAsync(m => m.Id == model.Id);
+
+            //TODO: Revisit order index change
+
+            //if index changes, we need to check and change index of others
+            if (displayItem.OrderIndex != model.OrderIndex)
+            {
+                //Move all items forward if position changes
+                var itemsToUpdateIndex = await _dbContext.DisplayItem
+                    .Where(d => d.OrderIndex == model.OrderIndex)
+                    .ToListAsync();
+
+                foreach (DisplayItem di in itemsToUpdateIndex)
+                {
+                    di.OrderIndex = di.OrderIndex + 1;
+                    _dbContext.Update(di);
+                }
+            }
+
+            //Update the rest of the fields
+            displayItem.OrderIndex = model.OrderIndex;
+            displayItem.IsActive = model.IsActive;
+            displayItem.DateModified = DateTime.Now;
+
+            //Only update image uri if exists
+            if (model.ImageUri_New != null)
+                displayItem.ImageUri = model.ImageUri_New;
+
+            _dbContext.Update(displayItem);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<List<DisplayItem>> GetActiveAsync()
         {
             return await _dbContext.DisplayItem

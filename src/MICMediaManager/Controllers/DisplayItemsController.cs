@@ -13,9 +13,11 @@ using System.IO;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using MICMediaManager.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MICMediaManager.Controllers
 {
+    [Authorize]
     public class DisplayItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,7 +39,9 @@ namespace MICMediaManager.Controllers
         // GET: DisplayItems
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DisplayItem.ToListAsync());
+            return View(await _context.DisplayItem
+                .OrderBy(d => d.OrderIndex)
+                .ToListAsync());
         }
 
         // GET: DisplayItems/GetActive
@@ -79,7 +83,7 @@ namespace MICMediaManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //upload file to blob storage
+                //used to store url after uploaded
                 string retUrl = "";
 
                 if (model.MediaFile.Length > 0)
@@ -122,34 +126,29 @@ namespace MICMediaManager.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateCreated,DateModified,ImageUri,IsActive,OrderIndex")] DisplayItem displayItem)
+        public async Task<IActionResult> Edit(DisplayItemEditViewModel model)
         {
-            if (id != displayItem.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+                //used to store url after uploaded
+                string retUrl = "";
+                //bool isNewMediaFile = false;
+               
+                if (model.MediaFile != null && model.MediaFile.Length > 0)
                 {
-                    _context.Update(displayItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DisplayItemExists(displayItem.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                    retUrl = await _storageService.UploadImageAsync(model.MediaFile);
+                    model.ImageUri_New = retUrl;
+                }                
+
+                //update
+                await _displayItemRepository.UpdateAsync(model);
+
+                //redirect back to index
                 return RedirectToAction("Index");
+
             }
-            return View(displayItem);
+            return View(model);
+
         }
 
         // GET: DisplayItems/Delete/5
