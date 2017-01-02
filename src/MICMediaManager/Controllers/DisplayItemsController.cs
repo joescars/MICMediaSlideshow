@@ -124,8 +124,7 @@ namespace MICMediaManager.Controllers
                 d.ImageUri = retUrl;
 
                 //save
-                _context.Add(d);
-                await _context.SaveChangesAsync();
+                await _displayItemRepository.CreateAsync(d);
 
                 //redirect back to index
                 return RedirectToAction("Index");

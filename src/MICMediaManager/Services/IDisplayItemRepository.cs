@@ -9,7 +9,7 @@ namespace MICMediaManager.Services
 {
     public interface IDisplayItemRepository
     {
-        Task CreateAsync(DisplayItemCreateViewModel model);
+        Task CreateAsync(DisplayItem model);
         Task<List<DisplayItem>> GetActiveAsync();
     }
 }

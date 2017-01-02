@@ -19,9 +19,10 @@ namespace MICMediaManager.Services
             _dbContext = dbContext;
         }
 
-        public async Task CreateAsync(DisplayItemCreateViewModel model)
+        public async Task CreateAsync(DisplayItem d)
         {
-            throw new NotImplementedException();
+            _dbContext.Add(d);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<List<DisplayItem>> GetActiveAsync()
