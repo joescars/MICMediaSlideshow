@@ -130,13 +130,10 @@ namespace MICMediaManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //used to store url after uploaded
-                string retUrl = "";
-                //bool isNewMediaFile = false;
-               
+              
                 if (model.MediaFile != null && model.MediaFile.Length > 0)
                 {
-                    retUrl = await _storageService.UploadImageAsync(model.MediaFile);
+                    var retUrl = await _storageService.UploadImageAsync(model.MediaFile);
                     model.ImageUri_New = retUrl;
                 }                
 
