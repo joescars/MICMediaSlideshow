@@ -36,21 +36,29 @@ namespace MICMediaManager.Services
         {
             var displayItem = await _dbContext.DisplayItem.SingleOrDefaultAsync(m => m.Id == model.Id);
 
-            //TODO: Revisit order index change
-
-            //if index changes, we need to check and change index of others
+             //if index changes, we need to check and change index of others
             if (displayItem.OrderIndex != model.OrderIndex)
             {
-                //Move all items forward if position changes
-                var itemsToUpdateIndex = await _dbContext.DisplayItem
-                    .Where(d => d.OrderIndex == model.OrderIndex)
+                var itemsToUpdate = await _dbContext.DisplayItem
+                    .Where(d => d.Id != displayItem.Id)
+                    .OrderBy(d => d.OrderIndex)
                     .ToListAsync();
 
-                foreach (DisplayItem di in itemsToUpdateIndex)
+                var itemsTotal = itemsToUpdate.Count();
+
+                int counter = 1;
+                foreach (DisplayItem di in itemsToUpdate)
                 {
-                    di.OrderIndex = di.OrderIndex + 1;
+                    //increment additional if we are replacing old one
+                    if (counter == model.OrderIndex)
+                        counter++;
+                    di.OrderIndex = counter;
                     _dbContext.Update(di);
+
+                    //increment for next round
+                    counter++;
                 }
+
             }
 
             //Update the rest of the fields
