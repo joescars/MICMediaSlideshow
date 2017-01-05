@@ -255,3 +255,5 @@ paket-files/
 appsettings.production.json
 PublishProfiles/
 initialusers.txt
+settings.txt
+settings.json
