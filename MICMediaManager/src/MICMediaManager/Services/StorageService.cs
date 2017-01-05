@@ -44,7 +44,7 @@ namespace MICMediaManager.Services
             CloudBlobClient blobClient = _storageAccount.CreateCloudBlobClient();
 
             // Get a reference to a container named “mycontainer.”
-            CloudBlobContainer container = blobClient.GetContainerReference("micscreenmedia");
+            CloudBlobContainer container = blobClient.GetContainerReference(_optionsAccessor.BlobContainerName);
 
             // If container doesn’t exist, create it.
             await container.CreateIfNotExistsAsync();

@@ -9,5 +9,6 @@ namespace MICMediaManager.Models
     {
         public string StorageAccountName { get; set; }
         public string StorageAccountKey { get; set; }
+        public string BlobContainerName { get; set; }
     }
 }
