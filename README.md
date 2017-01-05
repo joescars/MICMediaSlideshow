@@ -2,6 +2,10 @@
 
 This is a simple solution that I came up with in order to control what content was being shown on all the TV's at the Microsoft Innovation Center in Downtown Miami, FL. 
 
+![Image of TV Playing Slideshow](static/tv-animation.gif)
+
+## Projects in this Repo 
+
 This repo consists of two projects. 
 
 * [MICMediaManager](https://github.com/joescars/MICMediaSlideshow/tree/master/MICMediaManager)
