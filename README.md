@@ -4,8 +4,8 @@ This is a simple solution that I came up with in order to control what content w
 
 This repo consists of two projects. 
 
-* [MICMediaManager](/MICMediaSlideshow/tree/master/MICMediaManager)
-* [MICMediaPlayer](/MICMediaSlideshow/tree/master/MICMediaPlayer)
+* [MICMediaManager](/joescars/MICMediaSlideshow/tree/master/MICMediaManager)
+* [MICMediaPlayer](/joescars/MICMediaSlideshow/tree/master/MICMediaPlayer)
 
 MICMediaManager is a .NET Core 1.1 web application using MVC, EF and SQL Database. We use this to upload and organize the slides. The slides are stored in Azure Blob Storage and the app it self is running in Azure App Service.
 
