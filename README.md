@@ -11,7 +11,7 @@ This repo consists of two projects.
 * [MICMediaManager](https://github.com/joescars/MICMediaSlideshow/tree/master/MICMediaManager)
 * [MICMediaPlayer](https://github.com/joescars/MICMediaSlideshow/tree/master/MICMediaPlayer)
 
-MICMediaManager is a .NET Core 1.1 web application using MVC, EF and SQL Database. We use this to upload and organize the slides. The slides are stored in Azure Blob Storage and the app it self is running in Azure App Service.
+MICMediaManager is a .NET Core 1.1 web application using MVC, EF and SQL Database. We use this to upload and organize the slides. The slides are stored in [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/) and the app it self is running in Azure App Service.
 
 MICMediaPlayer is a UWP application that  calls an exposed API from MICMediaManager with a list of active slides. In then displays the slides to the user. The application runs in Windows 10 IoT Core running on a Raspberry Pi 2.
 
