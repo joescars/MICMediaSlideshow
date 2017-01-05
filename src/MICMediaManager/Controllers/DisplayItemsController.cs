@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MICMediaManager.Controllers
 {
-    [Authorize]
+    
     public class DisplayItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,11 +37,10 @@ namespace MICMediaManager.Controllers
         }
 
         // GET: DisplayItems
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DisplayItem
-                .OrderBy(d => d.OrderIndex)
-                .ToListAsync());
+            return View(await _displayItemRepository.ListAsync());
         }
 
         // GET: DisplayItems/GetActive
@@ -52,6 +51,7 @@ namespace MICMediaManager.Controllers
         }
 
         // GET: DisplayItems/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -59,7 +59,7 @@ namespace MICMediaManager.Controllers
                 return NotFound();
             }
 
-            var displayItem = await _context.DisplayItem.SingleOrDefaultAsync(m => m.Id == id);
+            var displayItem = await _displayItemRepository.GetAsync(id);
             if (displayItem == null)
             {
                 return NotFound();
@@ -69,6 +69,7 @@ namespace MICMediaManager.Controllers
         }
 
         // GET: DisplayItems/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -77,6 +78,7 @@ namespace MICMediaManager.Controllers
         // POST: DisplayItems/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DisplayItemCreateViewModel model)
@@ -106,6 +108,7 @@ namespace MICMediaManager.Controllers
         }
 
         // GET: DisplayItems/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -113,7 +116,7 @@ namespace MICMediaManager.Controllers
                 return NotFound();
             }
 
-            var displayItem = await _context.DisplayItem.SingleOrDefaultAsync(m => m.Id == id);
+            var displayItem = await _displayItemRepository.GetAsync(id);
             if (displayItem == null)
             {
                 return NotFound();
@@ -124,6 +127,7 @@ namespace MICMediaManager.Controllers
         // POST: DisplayItems/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(DisplayItemEditViewModel model)
@@ -149,6 +153,7 @@ namespace MICMediaManager.Controllers
         }
 
         // GET: DisplayItems/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -156,7 +161,7 @@ namespace MICMediaManager.Controllers
                 return NotFound();
             }
 
-            var displayItem = await _context.DisplayItem.SingleOrDefaultAsync(m => m.Id == id);
+            var displayItem = await _displayItemRepository.GetAsync(id);
             if (displayItem == null)
             {
                 return NotFound();
@@ -166,13 +171,13 @@ namespace MICMediaManager.Controllers
         }
 
         // POST: DisplayItems/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var displayItem = await _context.DisplayItem.SingleOrDefaultAsync(m => m.Id == id);
-            _context.DisplayItem.Remove(displayItem);
-            await _context.SaveChangesAsync();
+            var displayItem = await _displayItemRepository.GetAsync(id);
+            await _displayItemRepository.DeleteAsync(displayItem);
             return RedirectToAction("Index");
         }
 

@@ -11,34 +11,10 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DateModified)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DateModified)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.ImageUri)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ImageUri)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.OrderIndex)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.OrderIndex)
+            <img src="@Model.ImageUri" style="width: 500px;"/>
         </dd>
     </dl>
 </div>

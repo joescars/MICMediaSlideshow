@@ -19,6 +19,44 @@ namespace MICMediaManager.Services
             _dbContext = dbContext;
         }
 
+        public async Task<DisplayItem> GetAsync(int? id)
+        {
+            return await _dbContext.DisplayItem.SingleOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<List<DisplayItem>> ListAsync()
+        {
+            return await _dbContext.DisplayItem                
+                .OrderBy(d => d.OrderIndex)
+                .ToListAsync();
+        }
+
+        public async Task DeleteAsync(DisplayItem d)
+        {
+            //remove unwanted slide
+            _dbContext.DisplayItem.Remove(d);
+
+            //re-order existing slides
+            var itemsToUpdate = await _dbContext.DisplayItem
+             .Where(e => e.Id != d.Id)
+            .OrderBy(e => e.OrderIndex)
+            .ToListAsync();
+
+            int counter = 1;
+            foreach (DisplayItem di in itemsToUpdate)
+            {
+                //increment additional if we are replacing old one
+                di.OrderIndex = counter;
+                _dbContext.Update(di);
+
+                //increment for next round
+                counter++;
+            }
+
+            //save
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task CreateAsync(DisplayItem d)
         {
             //get the top index and set the new itemIndex +1
