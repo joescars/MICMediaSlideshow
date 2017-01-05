@@ -22,5 +22,6 @@ MICMediaPlayer is a UWP application that  calls an exposed API from MICMediaMana
 * [UWP Platform](https://msdn.microsoft.com/en-us/windows/uwp/get-started/universal-application-platform-guide)
 * [Getting Started with Azure Blob Storage](https://docs.microsoft.com/en-us/azure/storage/storage-dotnet-how-to-use-blobs)
 * [Visual Studio 2015](https://www.visualstudio.com/)
+* [Azure Storage Explorer](http://storageexplorer.com/)
 
 Contact me on twitter [@joescars](https://github.com/joescars)
