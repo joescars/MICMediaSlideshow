@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using MICMediaManager.Data;
 using MICMediaManager.Models;
 using MICMediaManager.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MICMediaManager
 {
@@ -51,7 +52,13 @@ namespace MICMediaManager
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                // TODO: Add back once we update all devices to use SSL
+                //options.SslPort = 44321;
+                //options.Filters.Add(new RequireHttpsAttribute());
+            });
+
 
             // Add application services.
             services.AddScoped<IDisplayItemRepository, DisplayItemRepository>();
@@ -84,6 +91,11 @@ namespace MICMediaManager
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            app.UseTwitterAuthentication(new TwitterOptions()
+            {
+                ConsumerKey = Configuration["TwitterAPIKey"],
+                ConsumerSecret = Configuration["TwitterAPISecret"]
+            });
 
             app.UseMvc(routes =>
             {
